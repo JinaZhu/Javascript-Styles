@@ -147,7 +147,7 @@ body {
   line-height: 2rem;
 }
 
-.reveal-img,
+/* .reveal-img,
 .reveal-text {
   position: absolute;
   width: 100%;
@@ -155,7 +155,7 @@ body {
   background: #17181a;
   left: 0;
   top: 0;
-}
+} */
 
 .cursor {
   width: 3rem;
