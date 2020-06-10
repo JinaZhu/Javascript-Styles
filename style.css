@@ -164,3 +164,7 @@ body {
   border-radius: 50%;
   position: absolute;
 }
+
+.active {
+  color: purple;
+}
