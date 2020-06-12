@@ -170,3 +170,7 @@ body {
 .active {
   color: purple;
 }
+/* enable click of hidden div */
+.scrollmagic-pin-spacer {
+  position: static !important;
+}
