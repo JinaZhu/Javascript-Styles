@@ -51,12 +51,12 @@ function animateSlides() {
       duration: "100%",
       triggerHook: 0,
     })
-      .addIndicators({
-        colorStart: "white",
-        colorTrigger: "white",
-        name: "page",
-        indent: 200,
-      })
+      // .addIndicators({
+      //   colorStart: "white",
+      //   colorTrigger: "white",
+      //   name: "page",
+      //   indent: 200,
+      // })
       // animation doesn't start till the pin is hit
       .setPin(slide, { pushFollowers: false }) // push Follower allows page to come right after one another
       .setTween(pageTl)
@@ -102,15 +102,16 @@ function navToggle(e) {
     gsap.to(".line1", 0.5, { rotate: "45", y: 5, background: "black" });
     gsap.to(".line2", 0.5, { rotate: "-45", y: -5, background: "black" });
     gsap.to("#logo", 1, { color: "black" });
+    // move circle that's at position -10% to enlarge and cover the page
     gsap.to(".nav-bar", 1, { clipPath: "circle(2500px at 100% -10%)" });
-    console.log("hello");
+    document.body.classList.add("hide");
   } else {
     e.target.classList.remove("active");
     gsap.to(".line1", 0.5, { rotate: "0", y: 0, background: "white" });
     gsap.to(".line2", 0.5, { rotate: "0", y: 0, background: "white" });
     gsap.to("#logo", 1, { color: "white" });
     gsap.to(".nav-bar", 1, { clipPath: "circle(50px at 100% -10%)" });
-    console.log("hello");
+    document.body.classList.remove("hide");
   }
 }
 
