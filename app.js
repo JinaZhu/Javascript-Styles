@@ -1,6 +1,7 @@
 let controller;
 let slideScene;
 let pageScene;
+let detailScene;
 
 function animateSlides() {
   // init controller
@@ -116,12 +117,15 @@ function navToggle(e) {
 }
 
 // barba page transitions
+// use to enable logo to redirect back to home
+const logo = document.querySelector("#logo");
 barba.init({
   views: [
     {
       namespace: "home",
       beforeEnter() {
         animateSlides();
+        logo.href = "./index.html";
       },
       beforeLeave() {
         slideScene.destroy();
@@ -131,6 +135,20 @@ barba.init({
     },
     {
       namespace: "fashion",
+      beforeEnter() {
+        logo.href = "../index.html";
+        detailAnimation();
+        gsap.fromTo(
+          ".nav-header",
+          1,
+          { y: "100%" },
+          { y: "0%", ease: "power2.inOut" }
+        );
+      },
+      beforeLeave() {
+        controller.destroy();
+        detailScene.destroy();
+      },
     },
   ],
   transitions: [
@@ -140,11 +158,13 @@ barba.init({
         let done = this.async();
         //an animation
         const tl = gsap.timeline({ defaults: { ease: "power2.inOut" } });
+        tl.fromTo(current.container, 1, { opacity: 1 }, { opacity: 0 });
         tl.fromTo(
-          current.container,
-          1,
-          { opacity: 1 },
-          { opacity: 0, onComplete: done }
+          ".swipe",
+          0.75,
+          { x: "100%" },
+          { x: "0%", onComplete: done },
+          "-=0.5"
         );
       },
       enter({ current, next }) {
@@ -154,14 +174,43 @@ barba.init({
         // to make it transition in instead of pop, head to the css page and change main position to be absolute and body to be relative
         const tl = gsap.timeline({ defaults: { ease: "power2.inOut" } });
         tl.fromTo(
-          next.container,
+          ".swipe",
           1,
-          { opacity: 0 },
-          { opacity: 1, onComplete: done }
+          { x: "0%" },
+          // stagger delay each of them one by one
+          { x: "100%", stagger: 0.25, onComplete: done }
         );
+        tl.fromTo(next.container, 1, { opacity: 0 }, { opacity: 1 });
       },
     },
   ],
 });
+
+function detailAnimation() {
+  controller = new ScrollMagic.Controller();
+  const slides = document.querySelectorAll(".detail-slide");
+  slides.forEach((slide, index, slides) => {
+    const slideTl = gsap.timeline({ defaults: { duration: 1 } });
+    let nextSlide = slides.length - 1 === index ? "end" : slides[index + 1];
+    const nextImg = nextSlide.querySelector("img");
+    slideTl.fromTo(slide, { opacity: 1 }, { opacity: 0 });
+    slideTl.fromTo(nextSlide, { opacity: 0 }, { opacity: 1 }, "-=1");
+    slideTl.fromTo(nextImg, { x: "50%" }, { x: "0%" });
+    //Scene
+    detailScene = new ScrollMagic.Scene({
+      triggerElement: slide,
+      duration: "100%",
+      triggerHook: 0,
+    })
+      .setPin(slide, { pushFollowers: false })
+      .setTween(slideTl)
+      // .addIndicators({
+      //   colorStart: "white",
+      //   colorTrigger: "white",
+      //   name: "detailScene"
+      // })
+      .addTo(controller);
+  });
+}
 
 burger.addEventListener("click", navToggle);
