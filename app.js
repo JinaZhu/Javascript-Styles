@@ -115,6 +115,53 @@ function navToggle(e) {
   }
 }
 
-burger.addEventListener("click", navToggle);
+// barba page transitions
+barba.init({
+  views: [
+    {
+      namespace: "home",
+      beforeEnter() {
+        animateSlides();
+      },
+      beforeLeave() {
+        slideScene.destroy();
+        pageScene.destroy();
+        controller.destroy();
+      },
+    },
+    {
+      namespace: "fashion",
+    },
+  ],
+  transitions: [
+    {
+      leave({ current, next }) {
+        //when to start bring the other page in
+        let done = this.async();
+        //an animation
+        const tl = gsap.timeline({ defaults: { ease: "power2.inOut" } });
+        tl.fromTo(
+          current.container,
+          1,
+          { opacity: 1 },
+          { opacity: 0, onComplete: done }
+        );
+      },
+      enter({ current, next }) {
+        let done = this.async();
+        // when entering a page, scroll to the top
+        window.scrollTo(0, 0);
+        // to make it transition in instead of pop, head to the css page and change main position to be absolute and body to be relative
+        const tl = gsap.timeline({ defaults: { ease: "power2.inOut" } });
+        tl.fromTo(
+          next.container,
+          1,
+          { opacity: 0 },
+          { opacity: 1, onComplete: done }
+        );
+      },
+    },
+  ],
+});
 
-animateSlides();
+burger.addEventListener("click", navToggle);
